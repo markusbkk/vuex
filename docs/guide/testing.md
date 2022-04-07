@@ -1,14 +1,12 @@
 # Testing
 
-<div class="scrimba"><a href="https://scrimba.com/p/pnyzgAP/cPGkpJhq" target="_blank" rel="noopener noreferrer">Try this lesson on Scrimba</a></div>
-
 The main parts we want to unit test in Vuex are mutations and actions.
 
 ## Testing Mutations
 
 Mutations are very straightforward to test, because they are just functions that completely rely on their arguments. One trick is that if you are using ES2015 modules and put your mutations inside your `store.js` file, in addition to the default export, you should also export the mutations as a named export:
 
-```js
+```ts
 const state = { ... }
 
 // export `mutations` as a named export
@@ -22,20 +20,20 @@ export default createStore({
 
 Example testing a mutation using Mocha + Chai (you can use any framework/assertion libraries you like):
 
-```js
-// mutations.js
+```ts
+// mutations.ts
 export const mutations = {
   increment: state => state.count++
 }
 ```
 
-```js
-// mutations.spec.js
-import { expect } from 'chai'
-import { mutations } from './store'
+```ts
+// mutations.spec.ts
+import {expect} from 'chai'
+import {mutations} from './store'
 
 // destructure assign `mutations`
-const { increment } = mutations
+const {increment} = mutations
 
 describe('mutations', () => {
   it('INCREMENT', () => {
@@ -55,8 +53,8 @@ Actions can be a bit more tricky because they may call out to external APIs. Whe
 
 Example testing an async action:
 
-```js
-// actions.js
+```ts
+// actions.ts
 import shop from '../api/shop'
 
 export const getAllProducts = ({ commit }) => {
@@ -67,13 +65,13 @@ export const getAllProducts = ({ commit }) => {
 }
 ```
 
-```js
-// actions.spec.js
+```ts
+// actions.spec.ts
 
 // use require syntax for inline loaders.
 // with inject-loader, this returns a module factory
 // that allows us to inject mocked dependencies.
-import { expect } from 'chai'
+import {expect} from 'chai'
 const actionsInjector = require('inject-loader!./actions')
 
 // create the module with our mocks
@@ -130,7 +128,7 @@ describe('actions', () => {
 
 If you have spies available in your testing environment (for example via [Sinon.JS](http://sinonjs.org/)), you can use them instead of the `testAction` helper:
 
-```js
+```ts
 describe('actions', () => {
   it('getAllProducts', () => {
     const commit = sinon.spy()
@@ -152,8 +150,8 @@ If your getters have complicated computation, it is worth testing them. Getters 
 
 Example testing a getter:
 
-```js
-// getters.js
+```ts
+// getters.ts
 export const getters = {
   filteredProducts (state, { filterCategory }) {
     return state.products.filter(product => {
@@ -163,10 +161,10 @@ export const getters = {
 }
 ```
 
-```js
-// getters.spec.js
-import { expect } from 'chai'
-import { getters } from './getters'
+```ts
+// getters.spec.ts
+import {expect} from 'chai'
+import {getters} from './getters'
 
 describe('getters', () => {
   it('filteredProducts', () => {
@@ -204,7 +202,7 @@ Create the following webpack config (together with proper [`.babelrc`](https://b
 ```js
 // webpack.config.js
 module.exports = {
-  entry: './test.js',
+  entry: './test.ts',
   output: {
     path: __dirname,
     filename: 'test-bundle.js'
@@ -212,7 +210,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js$/,
+        test: /\.ts$/,
         loader: 'babel-loader',
         exclude: /node_modules/
       }
@@ -235,6 +233,3 @@ mocha test-bundle.js
 3. Start `webpack-dev-server` using the config.
 4. Go to `localhost:8080/webpack-dev-server/test-bundle`.
 
-### Running in Browser with Karma + karma-webpack
-
-Consult the setup in [vue-loader documentation](https://vue-loader.vuejs.org/en/workflow/testing.html).

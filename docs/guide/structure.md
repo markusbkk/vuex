@@ -14,19 +14,19 @@ For any non-trivial app, we will likely need to leverage modules. Here's an exam
 
 ```bash
 ├── index.html
-├── main.js
+├── App.tsx
 ├── api
 │   └── ... # abstractions for making API requests
 ├── components
-│   ├── App.vue
+│   ├── MyComponent.tsx
 │   └── ...
 └── store
-    ├── index.js          # where we assemble modules and export the store
-    ├── actions.js        # root actions
-    ├── mutations.js      # root mutations
+    ├── index.ts          # where we assemble modules and export the store
+    ├── actions.ts        # root actions
+    ├── mutations.ts      # root mutations
     └── modules
-        ├── cart.js       # cart module
-        └── products.js   # products module
+        ├── cart.ts       # cart module
+        └── products.ts   # products module
 ```
 
-As a reference, check out the [Shopping Cart Example](https://github.com/vuejs/vuex/tree/4.0/examples/classic/shopping-cart).
+[Back](index.md)

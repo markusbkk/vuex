@@ -1,59 +1,44 @@
-# Vuex
+# Vuex (for use with React, ReactJs, React-Native)
 
-[![npm](https://img.shields.io/npm/v/vuex.svg)](https://npmjs.com/package/vuex)
-[![ci status](https://circleci.com/gh/vuejs/vuex/tree/main.png?style=shield)](https://circleci.com/gh/vuejs/vuex)
+[![npm](https://img.shields.io/npm/v/vuex.svg)](https://github.com/visitsb/vuex/packages/1347458)
+[![ci status](https://circleci.com/gh/visitsb/vuex/tree/main.png?style=shield)](https://circleci.com/gh/visitsb/vuex)
 
----
+Vuex is a [state management pattern](https://en.wikipedia.org/wiki/State_management) + library originally created for Vue.js applications. It serves as a centralized store for all the components in an application, with rules ensuring that the state can only be mutated in a predictable fashion. 
 
-**Pinia is now the new default**
+This **fork** makes Vuex available for use in non-Vue applications such as React, ReactJS, React Native. When it comes to state management, Vuex comes to being one of the most perfect, and predictable state management library based on concepts (and terminology).
 
-The official state management library for Vue has changed to [Pinia](https://pinia.vuejs.org). Pinia has almost the exact same or enhanced API as Vuex 5, described in [Vuex 5 RFC](https://github.com/vuejs/rfcs/pull/271). You could simply consider Pinia as Vuex 5 with a different name. Pinia also works with Vue 2.x as well.
-
-Vuex 3 and 4 will still be maintained. However, it's unlikely to add new functionalities to it. Vuex and Pinia can be installed in the same project. If you're migrating existing Vuex app to Pinia, it might be a suitable option. However, if you're planning to start a new project, we highly recommend using Pinia instead.
+> This fork is **not** offcially endorsed nor related to work done by Vue team. It is simply a [non-intrusive modification to Vuex](https://github.com/vuejs/vuex/pull/2149) to use Vuex outside of Vue ecosystem. Any credits for Vuex go entirely to the awesome Vue team.
 
 ---
 
-Vuex is a state management pattern + library for Vue.js applications. It serves as a centralized store for all the components in an application, with rules ensuring that the state can only be mutated in a predictable fashion. It also integrates with Vue's official [devtools extension](https://github.com/vuejs/vue-devtools) to provide advanced features such as zero-config time-travel debugging and state snapshot export / import.
-
-Learn more about Vuex at "[What is Vuex?](https://vuex.vuejs.org/)", or get started by looking into [full documentation](http://vuex.vuejs.org/).
+Learn more about Vuex at "[What is Vuex?](https://visitsb.github.io/vuex/)", or get started by looking into [full documentation](https://visitsb.github.io/vuex/).
 
 ## Documentation
 
-To check out docs, visit [vuex.vuejs.org](https://vuex.vuejs.org/).
-
-## Examples
-
-You may find example applications built with Vuex under the `examples` directory.
-
-Running the examples:
-
-```bash
-$ npm install
-$ npm run dev # serve examples at localhost:8080
-```
+To check out docs, visit [visitsb.github.io/vuex/](https://visitsb.github.io/vuex/).
 
 ## Questions
 
-For questions and support please use the [Discord chat server](https://chat.vuejs.org) or [the official forum](http://forum.vuejs.org). The issue list of this repo is **exclusively** for bug reports and feature requests.
+For questions and support use issue list of this repo.
 
 ## Issues
 
-Please make sure to read the [Issue Reporting Checklist](https://github.com/vuejs/vuex/blob/main/.github/contributing.md#issue-reporting-guidelines) before opening an issue. Issues not conforming to the guidelines may be closed immediately.
+Please make sure to read the [Issue Reporting Checklist](https://github.com/visitsb/vuex/tree/fork/main/.github/contributing.md#issue-reporting-guidelines) before opening an issue. Issues not conforming to the guidelines may be closed immediately.
 
 ## Changelog
 
-Detailed changes for each release are documented in the [release notes](https://github.com/vuejs/vuex/releases).
+> **Please note that Vuex is in Maintenance Mode** officially and [Pinia](https://github.com/vuejs/rfcs/pull/271#issuecomment-1082732704) is Vue official standard going forward for Vue community.
 
-## Stay In Touch
-
-For latest releases and announcements, follow on Twitter: [@vuejs](https://twitter.com/vuejs).
+**No** functionality changes, API changes, behavior changes planned in this fork, _except_ incorporating any ongoing Vuex maintenance updates.
 
 ## Contribution
 
-Please make sure to read the [Contributing Guide](https://github.com/vuejs/vuex/blob/main/.github/contributing.md) before making a pull request.
+Please make sure to read the [Contributing Guide](https://github.com/visitsb/vuex/tree/fork/main/.github/contributing.md) before making a pull request.
 
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2015-present Evan You
+Copyright (c) 2015-2022 Evan You (and Vue team)
+
+Copyright (c) 2022-onwards Shantibhushan Naik (Maintainer for this fork)

@@ -12,8 +12,9 @@ sidebar: auto
 
   Creates a new store.
 
-  ```js
-  import { createStore } from 'vuex'
+  ```ts
+  import {createStore} from "@visitsb/vuex";
+
 
   const store = createStore({ ...options })
   ```
@@ -42,7 +43,7 @@ sidebar: auto
 
   Register actions on the store. The handler function receives a `context` object that exposes the following properties:
 
-  ```js
+  ```ts
   {
     state,      // same as `store.state`, or local state if in modules
     rootState,  // same as `store.state`, only in modules
@@ -87,7 +88,7 @@ sidebar: auto
 
   An object containing sub modules to be merged into the store, in the shape of:
 
-  ```js
+  ```ts
   {
     key: {
       state,
@@ -128,7 +129,9 @@ sidebar: auto
 
   Turn the devtools on or off for a particular Vuex instance. For instance, passing `false` tells the Vuex store to not subscribe to devtools plugin. Useful when you have multiple stores on a single page.
 
-  ```js
+  > Note:  Keeping this `false` is **recommended** for React applications.
+
+  ```ts
   {
     devtools: false
   }
@@ -140,7 +143,9 @@ sidebar: auto
 
 - type: `Object`
 
-  The root state. Read only.
+  The root state. Read only. 
+
+  > The state is reactive, but not understood by React. Use the recommendation as shown in Counter [example](../index.md) to expose a reactive state.
 
 ### getters
 
@@ -184,7 +189,7 @@ sidebar: auto
 
   Subscribe to store mutations. The `handler` is called after every mutation and receives the mutation descriptor and post-mutation state as arguments.
 
-  ```js
+  ```ts
   const unsubscribe = store.subscribe((mutation, state) => {
     console.log(mutation.type)
     console.log(mutation.payload)
@@ -196,7 +201,7 @@ sidebar: auto
 
   By default, new handler is added to the end of the chain, so it will be executed after other handlers that were added before. This can be overridden by adding `prepend: true` to `options`, which will add the handler to the beginning of the chain.
 
-  ```js
+  ```ts
   store.subscribe(handler, { prepend: true })
   ```
 
@@ -211,7 +216,7 @@ sidebar: auto
   Subscribe to store actions. The `handler` is called for every dispatched action and receives the action descriptor and current store state as arguments.
   The `subscribe` method will return an `unsubscribe` function, which should be called when the subscription is no longer needed. For example, when unregistering a Vuex module or before destroying a Vue component.
 
-  ```js
+  ```ts
   const unsubscribe = store.subscribeAction((action, state) => {
     console.log(action.type)
     console.log(action.payload)
@@ -223,7 +228,7 @@ sidebar: auto
 
   By default, new handler is added to the end of the chain, so it will be executed after other handlers that were added before. This can be overridden by adding `prepend: true` to `options`, which will add the handler to the beginning of the chain.
 
-  ```js
+  ```ts
   store.subscribeAction(handler, { prepend: true })
   ```
 
@@ -231,7 +236,7 @@ sidebar: auto
 
   `subscribeAction` can also specify whether the subscribe handler should be called *before* or *after* an action dispatch (the default behavior is *before*):
 
-  ```js
+  ```ts
   store.subscribeAction({
     before: (action, state) => {
       console.log(`before action ${action.type}`)
@@ -244,7 +249,7 @@ sidebar: auto
 
   `subscribeAction` can also specify an `error` handler to catch an error thrown when an action is dispatched. The function will receive an `error` object as the third argument.
 
-  ```js
+  ```ts
   store.subscribeAction({
     error: (action, state, error) => {
       console.log(`error action ${action.type}`)
@@ -274,12 +279,6 @@ sidebar: auto
 - `hasModule(path: string | Array<string>): boolean`
 
   Check if the module with the given name is already registered. [Details](../guide/modules.md#dynamic-module-registration)
-
-### hotUpdate
-
--  `hotUpdate(newOptions: Object)`
-
-  Hot swap new actions and mutations. [Details](../guide/hot-reload.md)
 
 ## Component Binding Helpers
 
@@ -327,72 +326,4 @@ sidebar: auto
 
   Create namespaced component binding helpers. The returned object contains `mapState`, `mapGetters`, `mapActions` and `mapMutations` that are bound with the given namespace. [Details](../guide/modules.md#binding-helpers-with-namespace)
 
-## Composable Functions
-
-### useStore
-
-- `useStore<S = any>(injectKey?: InjectionKey<Store<S>> | string): Store<S>;`
-
-  Fetches the injected store when called inside the `setup` hook. When using the Composition API, you can retrieve the store by calling this method.
-
-  ```js
-  import { useStore } from 'vuex'
-
-  export default {
-    setup () {
-      const store = useStore()
-    }
-  }
-  ```
-
-  TypeScript users can use an injection key to retrieve a typed store. In order for this to work, you must define the injection key and pass it along with the store when installing the store instance to the Vue app.
-
-  First, declare the injection key using Vue's `InjectionKey` interface.
-
-  ```ts
-  // store.ts
-  import { InjectionKey } from 'vue'
-  import { createStore, Store } from 'vuex'
-
-  export interface State {
-    count: number
-  }
-
-  export const key: InjectionKey<Store<State>> = Symbol()
-
-  export const store = createStore<State>({
-    state: {
-      count: 0
-    }
-  })
-  ```
-
-  Then, pass the defined key as the second argument for the `app.use` method.
-
-  ```ts
-  // main.ts
-  import { createApp } from 'vue'
-  import { store, key } from './store'
-
-  const app = createApp({ ... })
-
-  app.use(store, key)
-
-  app.mount('#app')
-  ```
-
-  Finally, you can pass the key to the `useStore` method to retrieve the typed store instance.
-
-  ```ts
-  // in a vue component
-  import { useStore } from 'vuex'
-  import { key } from './store'
-
-  export default {
-    setup () {
-      const store = useStore(key)
-
-      store.state.count // typed as number
-    }
-  }
-  ```
+[Back](../guide/index.md)

@@ -1,39 +1,36 @@
 # Installation
 
-## Direct Download / CDN
+To avoid publishing under a new name, this package is published as a [GitHub package](https://github.com/visitsb/vuex/packages/1347458).
 
-[https://unpkg.com/vuex@4](https://unpkg.com/vuex@4)
+This means that you will need to [have a GitHub account](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#installing-a-package) in order to install package.
 
-<!--email_off-->
-[Unpkg.com](https://unpkg.com) provides NPM-based CDN links. The above link will always point to the latest release on NPM. You can also use a specific version/tag via URLs like `https://unpkg.com/vuex@4.0.0/dist/vuex.global.js`.
-<!--/email_off-->
+## Prerequisites
 
-Include `vuex` after Vue and it will install itself automatically:
+```bash
+# Login to GitHub.
+# Replace USERNAME with your GitHub username, 
+# TOKEN with your personal access token, and 
+# PUBLIC-EMAIL-ADDRESS with your email address.
+$ npm login --scope=@USERNAME --registry=https://npm.pkg.github.com
 
-```html
-<script src="/path/to/vue.js"></script>
-<script src="/path/to/vuex.js"></script>
+> Username: USERNAME
+> Password: TOKEN
+> Email: PUBLIC-EMAIL-ADDRESS
+
+# Create .npmrc in same location as your package.json to install packages
+$ echo '@visitsb:registry=https://npm.pkg.github.com' >> .npmrc
 ```
 
 ## NPM
 
 ```bash
-npm install vuex@next --save
+$ npm install @visitsb/vuex --save
 ```
 
 ## Yarn
 
 ```bash
-yarn add vuex@next --save
+$ yarn add @visitsb/vuex --save
 ```
 
-## Dev Build
-
-You will have to clone directly from GitHub and build `vuex` yourself if you want to use the latest dev build.
-
-```bash
-git clone https://github.com/vuejs/vuex.git node_modules/vuex
-cd node_modules/vuex
-yarn
-yarn build
-```
+[Back](index.md)

@@ -1,7 +1,5 @@
 # Actions
 
-<div class="scrimba"><a href="https://scrimba.com/p/pnyzgAP/c6ggR3cG" target="_blank" rel="noopener noreferrer">Try this lesson on Scrimba</a></div>
-
 Actions are similar to mutations, the differences being that:
 
 - Instead of mutating the state, actions commit mutations.
@@ -9,33 +7,37 @@ Actions are similar to mutations, the differences being that:
 
 Let's register a simple action:
 
-``` js
-const store = createStore({
-  state: {
-    count: 0
-  },
-  mutations: {
-    increment (state) {
-      state.count++
+``` ts
+export interface State {
+    count: number
+}
+
+export const store: Store<State> = createStore({
+    state: (): State => ({
+        count: 0
+    }),
+    mutations: {
+        INCREMENT(state: State) {
+            state.count++;
+        }
+    },
+    actions: {
+        async increment(context) {
+            context.commit('INCREMENT');
+        }
     }
-  },
-  actions: {
-    increment (context) {
-      context.commit('increment')
-    }
-  }
-})
+});
 ```
 
 Action handlers receive a context object which exposes the same set of methods/properties on the store instance, so you can call `context.commit` to commit a mutation, or access the state and getters via `context.state` and `context.getters`. We can even call other actions with `context.dispatch`. We will see why this context object is not the store instance itself when we introduce [Modules](modules.md) later.
 
-In practice, we often use ES2015 [argument destructuring](https://github.com/lukehoban/es6features#destructuring) to simplify the code a bit (especially when we need to call `commit` multiple times):
+> In practice, we often use ES2015 [argument destructuring](https://github.com/lukehoban/es6features#destructuring) to simplify the code a bit (especially when we need to call `commit` multiple times):
 
-``` js
+``` ts
 actions: {
-  increment ({ commit }) {
-    commit('increment')
-  }
+    async increment({commit}: { commit: Commit }) {
+        commit('INCREMENT');
+    }
 }
 ```
 
@@ -43,13 +45,13 @@ actions: {
 
 Actions are triggered with the `store.dispatch` method:
 
-``` js
+``` ts
 store.dispatch('increment')
 ```
 
 This may look silly at first sight: if we want to increment the count, why don't we just call `store.commit('increment')` directly? Remember that **mutations have to be synchronous**. Actions don't. We can perform **asynchronous** operations inside an action:
 
-``` js
+``` ts
 actions: {
   incrementAsync ({ commit }) {
     setTimeout(() => {
@@ -61,7 +63,7 @@ actions: {
 
 Actions support the same payload format and object-style dispatch:
 
-``` js
+``` ts
 // dispatch with a payload
 store.dispatch('incrementAsync', {
   amount: 10
@@ -76,7 +78,7 @@ store.dispatch({
 
 A more practical example of real-world actions would be an action to checkout a shopping cart, which involves **calling an async API** and **committing multiple mutations**:
 
-``` js
+``` ts
 actions: {
   checkout ({ commit, state }, products) {
     // save the items currently in the cart
@@ -100,25 +102,21 @@ Note we are performing a flow of asynchronous operations, and recording the side
 
 ## Dispatching Actions in Components
 
-You can dispatch actions in components with `this.$store.dispatch('xxx')`, or use the `mapActions` helper which maps component methods to `store.dispatch` calls (requires root `store` injection):
+You can dispatch actions in components with `store.dispatch('xxx')`, or use the `mapActions` helper which maps component methods to `store.dispatch` calls (requires root `store` injection as done in [example](../index.md)):
 
-``` js
-import { mapActions } from 'vuex'
+``` ts
+import {mapActions, mapState} from "@visitsb/vuex";
 
-export default {
-  // ...
-  methods: {
-    ...mapActions([
-      'increment', // map `this.increment()` to `this.$store.dispatch('increment')`
+const {increment, incrementBy} = mapActions([
+        'increment', // map `increment()` to `store.commit('increment')`
 
-      // `mapActions` also supports payloads:
-      'incrementBy' // map `this.incrementBy(amount)` to `this.$store.dispatch('incrementBy', amount)`
-    ]),
-    ...mapActions({
-      add: 'increment' // map `this.add()` to `this.$store.dispatch('increment')`
-    })
-  }
-}
+        // `mapMutations` also supports payloads:
+        'incrementBy' // map `incrementBy(amount)` to `store.commit('incrementBy', amount)`
+    ]);
+
+const {add} = mapActions({
+        add: 'increment' // map `this.add()` to `this.$store.dispatch('increment')`
+    });
 ```
 
 ## Composing Actions
@@ -127,7 +125,7 @@ Actions are often asynchronous, so how do we know when an action is done? And mo
 
 The first thing to know is that `store.dispatch` can handle Promise returned by the triggered action handler and it also returns Promise:
 
-``` js
+``` ts
 actions: {
   actionA ({ commit }) {
     return new Promise((resolve, reject) => {
@@ -142,7 +140,7 @@ actions: {
 
 Now you can do:
 
-``` js
+``` ts
 store.dispatch('actionA').then(() => {
   // ...
 })
@@ -150,7 +148,7 @@ store.dispatch('actionA').then(() => {
 
 And also in another action:
 
-``` js
+``` ts
 actions: {
   // ...
   actionB ({ dispatch, commit }) {
@@ -163,7 +161,7 @@ actions: {
 
 Finally, if we make use of [async / await](https://tc39.github.io/ecmascript-asyncawait/), we can compose our actions like this:
 
-``` js
+``` ts
 // assuming `getData()` and `getOtherData()` return Promises
 
 actions: {
@@ -178,3 +176,5 @@ actions: {
 ```
 
 > It's possible for a `store.dispatch` to trigger multiple action handlers in different modules. In such a case the returned value will be a Promise that resolves when all triggered handlers have been resolved.
+
+[Back](index.md)

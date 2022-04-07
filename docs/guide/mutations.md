@@ -1,26 +1,23 @@
 # Mutations
 
-<div class="scrimba"><a href="https://scrimba.com/p/pnyzgAP/ckMZp4HN" target="_blank" rel="noopener noreferrer">Try this lesson on Scrimba</a></div>
-
 The only way to actually change state in a Vuex store is by committing a mutation. Vuex mutations are very similar to events: each mutation has a string **type** and a **handler**. The handler function is where we perform actual state modifications, and it will receive the state as the first argument:
 
-```js
-const store = createStore({
-  state: {
-    count: 1
-  },
-  mutations: {
-    increment (state) {
-      // mutate state
-      state.count++
+```ts
+const store: Store<State> = createStore({
+    state: (): State => ({
+        count: 0
+    }),
+    mutations: {
+        INCREMENT(state: State) {
+            state.count = state.count + 1
+        }
     }
-  }
-})
+});
 ```
 
 You cannot directly call a mutation handler. Think of it more like event registration: "When a mutation with type `increment` is triggered, call this handler." To invoke a mutation handler, you need to call `store.commit` with its type:
 
-```js
+```ts
 store.commit('increment')
 ```
 
@@ -28,7 +25,7 @@ store.commit('increment')
 
 You can pass an additional argument to `store.commit`, which is called the **payload** for the mutation:
 
-```js
+```ts
 // ...
 mutations: {
   increment (state, n) {
@@ -37,13 +34,13 @@ mutations: {
 }
 ```
 
-```js
+```ts
 store.commit('increment', 10)
 ```
 
-In most cases, the payload should be an object so that it can contain multiple fields, and the recorded mutation will also be more descriptive:
+In most cases, the **payload should be an object** so that it can contain multiple fields, and the recorded mutation will also be more descriptive:
 
-```js
+```ts
 // ...
 mutations: {
   increment (state, payload) {
@@ -52,7 +49,7 @@ mutations: {
 }
 ```
 
-```js
+```ts
 store.commit('increment', {
   amount: 10
 })
@@ -62,7 +59,7 @@ store.commit('increment', {
 
 An alternative way to commit a mutation is by directly using an object that has a `type` property:
 
-```js
+```ts
 store.commit({
   type: 'increment',
   amount: 10
@@ -71,7 +68,7 @@ store.commit({
 
 When using object-style commit, the entire object will be passed as the payload to mutation handlers, so the handler remains the same:
 
-```js
+```ts
 mutations: {
   increment (state, payload) {
     state.count += payload.amount
@@ -83,35 +80,36 @@ mutations: {
 
 It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application:
 
-```js
-// mutation-types.js
+```ts
+// mutation-types.ts
 export const SOME_MUTATION = 'SOME_MUTATION'
 ```
 
-```js
-// store.js
-import { createStore } from 'vuex'
-import { SOME_MUTATION } from './mutation-types'
+```ts
+// store.ts
 
-const store = createStore({
-  state: { ... },
-  mutations: {
-    // we can use the ES2015 computed property name feature
-    // to use a constant as the function name
-    [SOME_MUTATION] (state) {
-      // mutate state
+import {createStore, Store} from "@visitsb/vuex";
+import {SOME_MUTATION} from "./mutation-types";
+
+export const store: Store<{}> = createStore({
+    state: () => ({}),
+    mutations: {
+        // we can use the ES2015 computed property name feature
+        // to use a constant as the function name
+        [SOME_MUTATION](state) {
+            // mutate state
+        }
     }
-  }
-})
+});
 ```
 
-Whether to use constants is largely a preference - it can be helpful in large projects with many developers, but it's totally optional if you don't like them.
+Whether to use constants is largely a preference - it can be helpful in large projects with many developers, but it's totally **optional** if you don't like them.
 
 ## Mutations Must Be Synchronous
 
 One important rule to remember is that **mutation handler functions must be synchronous**. Why? Consider the following example:
 
-```js
+```ts
 mutations: {
   someMutation (state) {
     api.callAsyncMethod(() => {
@@ -121,37 +119,34 @@ mutations: {
 }
 ```
 
-Now imagine we are debugging the app and looking at the devtool's mutation logs. For every mutation logged, the devtool will need to capture a "before" and "after" snapshots of the state. However, the asynchronous callback inside the example mutation above makes that impossible: the callback is not called yet when the mutation is committed, and there's no way for the devtool to know when the callback will actually be called - any state mutation performed in the callback is essentially un-trackable!
+Now imagine we are debugging the app and looking at logs. For every mutation logged, the asynchronous callback inside the example mutation is not called yet when the mutation is committed, there's no way to know when the callback will actually be called - any state mutation performed in the callback is essentially un-trackable! See [strict](strict.md) on how to prevent that during development of your application.
 
 ## Committing Mutations in Components
 
-You can commit mutations in components with `this.$store.commit('xxx')`, or use the `mapMutations` helper which maps component methods to `store.commit` calls (requires root `store` injection):
+You can commit mutations in components with `this.$store.commit('xxx')`, or use the `mapMutations` helper which maps component methods to `store.commit` calls (requires root `store` injection as shown in Counter [example](../index.md)):
 
-```js
-import { mapMutations } from 'vuex'
+```ts
+import {mapMutations} from "@visitsb/vuex";
 
-export default {
-  // ...
-  methods: {
-    ...mapMutations([
-      'increment', // map `this.increment()` to `this.$store.commit('increment')`
+// ...
+const {increment, incrementBy} = mapMutations([
+    'increment', // map `increment()` to `store.commit('increment')`
 
-      // `mapMutations` also supports payloads:
-      'incrementBy' // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
-    ]),
-    ...mapMutations({
-      add: 'increment' // map `this.add()` to `this.$store.commit('increment')`
-    })
-  }
-}
+    // `mapMutations` also supports payloads:
+    'incrementBy' // map `incrementBy(amount)` to `store.commit('incrementBy', amount)`
+]);
+
+const {add} = mapMutations({
+        add: 'increment' // map `add()` to `store.commit('increment')`
+    });
 ```
 
 ## On to Actions
 
 Asynchronicity combined with state mutation can make your program very hard to reason about. For example, when you call two methods both with async callbacks that mutate the state, how do you know when they are called and which callback was called first? This is exactly why we want to separate the two concepts. In Vuex, **mutations are synchronous transactions**:
 
-```js
-store.commit('increment')
+```ts
+store.commit('increment');
 // any state change that the "increment" mutation may cause
 // should be done at this moment.
 ```

@@ -1,133 +1,85 @@
 # TypeScript Support
 
-Vuex provides its typings so you can use TypeScript to write a store definition. You don't need any special TypeScript configuration for Vuex. Please follow [Vue's basic TypeScript setup](https://v3.vuejs.org/guide/typescript-support.html) to configure your project.
+Vuex provides its typings so you can use TypeScript to write a store definition. You don't need any special TypeScript configuration for Vuex. 
 
-However, if you're writing your Vue components in TypeScript, there're a few steps to follow that require for you to correctly provide typings for a store.
+However, if you're writing your components in TypeScript, there're a few steps to follow that require for you to correctly provide typings for a store.
 
-## Typing `$store` Property in Vue Component
+## Typing `store`
 
-Vuex doesn't provide typings for `this.$store` property out of the box. When used with TypeScript, you must declare your own module augmentation.
+Vuex doesn't provide typings for `store` property out of the box, but you can easily use the typings in your React applications.
 
-To do so, declare custom typings for Vue's `ComponentCustomProperties` by adding a declaration file in your project folder:
+To do so, declare typings:
 
 ```ts
-// vuex.d.ts
-import { Store } from 'vuex'
+// store.ts
 
-declare module '@vue/runtime-core' {
-  // declare your own store states
-  interface State {
+import {Store} from "@visitsb/vuex";
+
+export interface State {
     count: number
-  }
-
-  // provide typings for `this.$store`
-  interface ComponentCustomProperties {
-    $store: Store<State>
-  }
 }
+
+export const store: Store<State> = createStore(...);
 ```
 
-## Typing `useStore` Composition Function
+### Reactivity
 
-When you're writing your Vue component in Composition API, you will most likely want `useStore` to return the typed store. For `useStore` to correctly return the typed store, you must:
-
-1. Define the typed `InjectionKey`.
-2. Provide the typed `InjectionKey` when installing a store to the Vue app.
-3. Pass the typed `InjectionKey` to the `useStore` method.
-
-Let's tackle this step by step. First, define the key using Vue's `InjectionKey` interface along with your own store typing definition:
+The recommended way to inject store into your components is using React's [Context](https://reactjs.org/docs/context.html) Provider and [useContext](https://reactjs.org/docs/hooks-reference.html#usecontext) hook:
 
 ```ts
 // store.ts
-import { InjectionKey } from 'vue'
-import { createStore, Store } from 'vuex'
 
-// define your typings for the store state
-export interface State {
-  count: number
+export const store: Store<State> = createStore(...);
+
+export const StoreContext: Context<Store<State>> = createContext(store);
+export const StateContext: Context<State> = createContext(store.state);
+
+export default function useStore() {
+    const store = useContext<Store<State>>(StoreContext);
+    const state = useContext<State>(StateContext);
+
+    // Provider can expose a global variable
+    // but it needs to be reactive in order to cause a re-render
+    // which is different to Vuex - hence subscribe to state changes
+    // and refresh a `react`-ive state which Provider understands
+    let [watchedState, setWatchedState] = useState(state);
+
+    useEffect((/*didUpdate*/) => {
+        const unsubscribe = store.subscribe((_, newState) => setWatchedState((prevState) => ({...prevState, ...newState})));
+
+        return (/*cleanup*/) => {
+            unsubscribe();
+        }
+    }, []);
+
+    const _globalThis = (globalThis || self || window || global || {});
+    if (typeof _globalThis.$store === 'undefined') {
+        // mapXXX, createNamespacedHelpers presume `this.$store` is setup
+        _globalThis.$store = store;
+    }
+
+    return {store, state: watchedState};
 }
 
-// define injection key
-export const key: InjectionKey<Store<State>> = Symbol()
-
-export const store = createStore<State>({
-  state: {
-    count: 0
-  }
-})
 ```
 
-Next, pass the defined injection key when installing the store to the Vue app:
+Use the store at your application root, and provide it to child components:
 
 ```ts
-// main.ts
-import { createApp } from 'vue'
-import { store, key } from './store'
+// App.tsx
 
-const app = createApp({ ... })
+import useStore, {StateContext, StoreContext} from "./store";
 
-// pass the injection key
-app.use(store, key)
+export default function App() {
+    const {store, state} = useTodoStore();
 
-app.mount('#app')
+    return <SafeAreaProvider>
+        <StoreContext.Provider value={store}>
+            <StateContext.Provider value={state}>
+                <MyComponent />
+            </StateContext.Provider>
+        </StoreContext.Provider>
+    </SafeAreaProvider>;
 ```
 
-Finally, you can pass the key to the `useStore` method to retrieve the typed store.
-
-```ts
-// in a vue component
-import { useStore } from 'vuex'
-import { key } from './store'
-
-export default {
-  setup () {
-    const store = useStore(key)
-
-    store.state.count // typed as number
-  }
-}
-```
-
-Under the hood, Vuex installs the store to the Vue app using Vue's [Provide/Inject](https://v3.vuejs.org/api/composition-api.html#provide-inject) feature which is why the injection key is an important factor.
-
-### Simplifying `useStore` usage
-
-Having to import `InjectionKey` and passing it to `useStore` everywhere it's used can quickly become a repetitive task. To simplify matters, you can define your own composable function to retrieve a typed store:
-
-```ts
-// store.ts
-import { InjectionKey } from 'vue'
-import { createStore, useStore as baseUseStore, Store } from 'vuex'
-
-export interface State {
-  count: number
-}
-
-export const key: InjectionKey<Store<State>> = Symbol()
-
-export const store = createStore<State>({
-  state: {
-    count: 0
-  }
-})
-
-// define your own `useStore` composition function
-export function useStore () {
-  return baseUseStore(key)
-}
-```
-
-Now, by importing your own composable function, you can retrieve the typed store **without** having to provide the injection key and its typing:
-
-```ts
-// in a vue component
-import { useStore } from './store'
-
-export default {
-  setup () {
-    const store = useStore()
-
-    store.state.count // typed as number
-  }
-}
-```
+Components can access the `store`, `state` from context providers using either [useContext](https://reactjs.org/docs/hooks-reference.html#usecontext) hook or [Context.Consumer](https://reactjs.org/docs/context.html#contextconsumer) as described in the [example](../index.md).

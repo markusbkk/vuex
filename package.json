@@ -1,7 +1,7 @@
 {
-  "name": "vuex",
+  "name": "@visitsb/vuex",
   "version": "4.0.2",
-  "description": "state management for Vue.js",
+  "description": "state management for non Vue.js applications such as React, ReactJS, React Native",
   "main": "dist/vuex.cjs.js",
   "exports": {
     ".": {
@@ -44,14 +44,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vuejs/vuex.git"
+    "url": "git+https://github.com/visitsb/vuex.git"
   },
   "author": "Evan You",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vuejs/vuex/issues"
+    "url": "https://github.com/visitsb/vuex/issues"
   },
-  "homepage": "https://github.com/vuejs/vuex#readme",
+  "homepage": "https://github.com/visitsb/vuex#readme",
   "peerDependencies": {
     "vue": "^3.2.0"
   },
