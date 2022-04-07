@@ -1,6 +1,6 @@
 # Installation
 
-To avoid publishing under a new name, this package is published as a [GitHub package](https://github.com/visitsb/vuex/packages/1347458).
+To avoid publishing under a new name, this package is published as a [GitHub package](https://github.com/visitsb/vuex/packages).
 
 This means that you will need to [have a GitHub account](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#installing-a-package) in order to install package.
 
