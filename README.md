@@ -1,7 +1,7 @@
 # Vuex (for use with React, ReactJs, React-Native)
 
 [![npm](https://img.shields.io/npm/v/vuex.svg)](https://github.com/visitsb/vuex/packages/1347458)
-[![ci status](https://circleci.com/gh/visitsb/vuex/tree/main.png?style=shield)](https://circleci.com/gh/visitsb/vuex)
+[![ci status](https://circleci.com/gh/visitsb/vuex/tree/fork%2Fmain.png?style=shield)](https://circleci.com/gh/visitsb/vuex)
 
 Vuex is a [state management pattern](https://en.wikipedia.org/wiki/State_management) + library originally created for Vue.js applications. It serves as a centralized store for all the components in an application, with rules ensuring that the state can only be mutated in a predictable fashion. 
 
