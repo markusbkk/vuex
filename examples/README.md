@@ -10,6 +10,12 @@ Simple working example using Vuex within a [React Native](https://reactnative.de
 
 ## Chat
 
-Simple working example using Vuex within a [React Native](https://reactnative.dev/) project built on top of [Expo](https://docs.expo.dev/)
+Slightly complex but working example using Vuex within a [React Native](https://reactnative.dev/) project built on top of [Expo](https://docs.expo.dev/)
 
 ![img](public/chat-example.gif)
+
+## Shopping Cart
+
+A complete, feature-rich example using modules in Vuex within a [React Native](https://reactnative.dev/) project built on top of [Expo](https://docs.expo.dev/)
+
+![img](public/shopping-cart-example.gif)

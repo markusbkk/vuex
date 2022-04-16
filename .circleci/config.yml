@@ -61,21 +61,6 @@ jobs:
           command: |
             yarn test:unit
 
-  test-e2e:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: Installing Dependencies
-          command: yarn
-      - run:
-          name: Installing peerDependencies explicitly
-          command: yarn add vue --peer
-      - run:
-          name: Running End-to-end Tests
-          command: |
-            yarn test:e2e
-
   test-ssr:
     <<: *defaults
     steps:
@@ -100,9 +85,6 @@ workflows:
       #     requires:
       #       - install
       - test-unit:
-          requires:
-            - install
-      - test-e2e:
           requires:
             - install
       - test-ssr:
