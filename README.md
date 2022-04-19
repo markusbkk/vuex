@@ -2,6 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/vuex.svg)](https://github.com/visitsb/vuex/packages/1347458)
 [![ci status](https://circleci.com/gh/visitsb/vuex/tree/fork%2Fmain.png?style=shield)](https://circleci.com/gh/visitsb/vuex)
+![ios](https://img.shields.io/badge/iOS-4630EB.svg?style=flat-square&logo=APPLE&labelColor=999999&logoColor=fff)
+![android](https://img.shields.io/badge/Android-4630EB.svg?style=flat-square&logo=ANDROID&labelColor=A4C639&logoColor=fff)
+![web](https://img.shields.io/badge/web-4630EB.svg?style=flat-square&logo=GOOGLE-CHROME&labelColor=4285F4&logoColor=fff)
 
 Vuex is a [state management pattern](https://en.wikipedia.org/wiki/State_management) + library originally created for Vue.js applications. It serves as a centralized store for all the components in an application, with rules ensuring that the state can only be mutated in a predictable fashion. 
 
